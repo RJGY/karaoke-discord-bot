@@ -83,19 +83,19 @@ class KaraokeCommands(commands.Cog):
                     await interaction.response.edit_message(embed=selection_embed, view=self)
 
                     # # TODO UNCOMMENT FOR RELEASE
-                    # try:
-                    #     requests.post(f'{api_host}/api/queue', data=data)
-                    # except Exception:
-                    #     embed = discord.Embed(
-                    #         title='Error',
-                    #         colour=discord.Colour.red(),    
-                    #         timestamp=dt.datetime.now()
-                    #     )
-                    #     embed.set_author(name='Karaoke Bot')
-                    #     embed.add_field(name=f'Could not connect to server.', value='')
-                    #     logging.error(f'Unable to connect to server: {Exception}')
-                    #     await interaction.followup.send(embed=embed)
-                    #     return
+                    try:
+                        requests.post(f'{api_host}/api/queue', data=data)
+                    except Exception:
+                        embed = discord.Embed(
+                            title='Error',
+                            colour=discord.Colour.red(),    
+                            timestamp=dt.datetime.now()
+                        )
+                        embed.set_author(name='Karaoke Bot')
+                        embed.add_field(name=f'Could not connect to server.', value='')
+                        logging.error(f'Unable to connect to server: {Exception}')
+                        await interaction.followup.send(embed=embed)
+                        return
 
                     # Send queueing status embed as a follow-up
                     queue_embed = discord.Embed(
@@ -144,19 +144,19 @@ class KaraokeCommands(commands.Cog):
             }
 
             # # TODO UNCOMMENT FOR RELEASE
-            # try:
-            #     requests.post(f'{api_host}/api/queue', data=data)
-            # except Exception:
-            #     embed = discord.Embed(
-            #         title='Error',
-            #         colour=discord.Colour.red(),    
-            #         timestamp=dt.datetime.now()
-            #     )
-            #     embed.set_author(name='Karaoke Bot')
-            #     embed.add_field(name=f'Could not connect to server.', value='')
-            #     logging.error(f'Unable to connect to server: {Exception}')
-            #     await interaction.followup.send(embed=embed)
-            #     return
+            try:
+                requests.post(f'{api_host}/api/queue', data=data)
+            except Exception:
+                embed = discord.Embed(
+                    title='Error',
+                    colour=discord.Colour.red(),    
+                    timestamp=dt.datetime.now()
+                )
+                embed.set_author(name='Karaoke Bot')
+                embed.add_field(name=f'Could not connect to server.', value='')
+                logging.error(f'Unable to connect to server: {Exception}')
+                await interaction.followup.send(embed=embed)
+                return
             
             embed = discord.Embed(
                 title='Song Queued',
