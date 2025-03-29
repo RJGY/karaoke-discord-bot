@@ -85,7 +85,7 @@ class KaraokeCommands(commands.Cog):
                     # # TODO UNCOMMENT FOR RELEASE
                     try:
                         requests.post(f'{api_host}/api/queue', data=data)
-                    except Exception:
+                    except Exception as e:
                         embed = discord.Embed(
                             title='Error',
                             colour=discord.Colour.red(),    
@@ -93,7 +93,7 @@ class KaraokeCommands(commands.Cog):
                         )
                         embed.set_author(name='Karaoke Bot')
                         embed.add_field(name=f'Could not connect to server.', value='')
-                        logging.error(f'Unable to connect to server: {Exception}')
+                        logging.error(f'Unable to connect to server: {e}')
                         await interaction.followup.send(embed=embed)
                         return
 
@@ -146,7 +146,7 @@ class KaraokeCommands(commands.Cog):
             # # TODO UNCOMMENT FOR RELEASE
             try:
                 requests.post(f'{api_host}/api/queue', data=data)
-            except Exception:
+            except Exception as e:
                 embed = discord.Embed(
                     title='Error',
                     colour=discord.Colour.red(),    
@@ -154,7 +154,7 @@ class KaraokeCommands(commands.Cog):
                 )
                 embed.set_author(name='Karaoke Bot')
                 embed.add_field(name=f'Could not connect to server.', value='')
-                logging.error(f'Unable to connect to server: {Exception}')
+                logging.error(f'Unable to connect to server: {e}')
                 await interaction.followup.send(embed=embed)
                 return
             
