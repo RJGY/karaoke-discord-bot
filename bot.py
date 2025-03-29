@@ -6,7 +6,6 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-
 class KaraokeBot(commands.Bot):
     def __init__(self, cogs = []):
         if not cogs:

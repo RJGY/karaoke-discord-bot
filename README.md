@@ -14,7 +14,7 @@ A Discord bot that helps manage karaoke sessions in your server. This bot allows
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/karaoke-discord-bot.git
+git clone https://github.com/rjgy/karaoke-discord-bot.git
 cd karaoke-discord-bot
 ```
 
@@ -27,6 +27,7 @@ pip install -r requirements.txt
 ```env
 DISCORD_TOKEN=your_discord_bot_token
 SYMBOL=your_command_prefix
+API_HOST=your_api_host
 ```
 
 4. Run the bot:
