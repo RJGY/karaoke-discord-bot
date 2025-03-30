@@ -8,7 +8,6 @@ import logging
 import validators
 from pytubefix import Search
 import pytubefix
-import asyncio
 
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -18,13 +17,23 @@ api_host = os.getenv('API_HOST')
 
 class KaraokeCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
-        
         self.bot = bot
+
+
+    """Listeners"""
+    @commands.Cog.listener()
+    async def on_ready(self):
+        synced = await self.bot.tree.sync()
+        for command in synced:
+            logging.info(f'Synced {command.name} with slash commands.')
+        logging.info(f'Synced {len(synced)} commands with slash commands.')
+
             
     """Commands"""
     @discord.app_commands.command(name='test', description='Test command to make sure im not going insane :3.')
     async def test_command(self, interaction: discord.Interaction):
         await interaction.response.send_message('Test command.')
+
         
     @discord.app_commands.command(name='play', description='Plays a song')
     @discord.app_commands.describe(song='The user to retrieve info from.')
@@ -62,7 +71,24 @@ class KaraokeCommands(commands.Cog):
 
             class SearchView(View):
                 def __init__(self):
-                    super().__init__(timeout=60)
+                    super().__init__(timeout=30)
+                    self.message = None
+
+                async def on_timeout(self):
+                    # Create timeout embed
+                    timeout_embed = discord.Embed(
+                        title='Search Timed Out',
+                        description='Song selection has timed out. Please try again.',
+                        colour=discord.Colour.red(),
+                        timestamp=dt.datetime.now()
+                    )
+                    
+                    # Disable all items in the view
+                    for item in self.children:
+                        item.disabled = True
+                    
+                    # Update the message with disabled view and new embed
+                    await self.message.edit(embed=timeout_embed, view=self)
 
                 @discord.ui.select(placeholder="Select an option", options=selection_options)
                 async def select_callback(self, interaction: discord.Interaction, select: Select):
@@ -82,7 +108,6 @@ class KaraokeCommands(commands.Cog):
                     # Update the message with disabled view and new embed
                     await interaction.response.edit_message(embed=selection_embed, view=self)
 
-                    # # TODO UNCOMMENT FOR RELEASE
                     try:
                         requests.post(f'{api_host}/api/queue', data=data)
                     except Exception as e:
@@ -132,18 +157,15 @@ class KaraokeCommands(commands.Cog):
 
             view = SearchView()
 
-            await interaction.followup.send(embed=search_results_embed, view=view)
-
+            message = await interaction.followup.send(embed=search_results_embed, view=view)
+            view.message = message
         else:
-            print('balls2')
-
             video = pytubefix.YouTube(song_url)
 
             data = {
                 'url' : song_url
             }
 
-            # # TODO UNCOMMENT FOR RELEASE
             try:
                 requests.post(f'{api_host}/api/queue', data=data)
             except Exception as e:
@@ -169,6 +191,7 @@ class KaraokeCommands(commands.Cog):
             embed.add_field(name=f'{interaction.user.display_name} has requested {video.title}', value='', inline=False)
             embed.set_footer(text=f'{interaction.user.display_name}')
             await interaction.followup.send(embed=embed)
+            
 
     @commands.hybrid_command(name='sync', description='Syncs the bot with slash commands.')
     async def sync_command(self, ctx: commands.Context):
