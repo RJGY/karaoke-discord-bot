@@ -53,10 +53,6 @@ class KaraokeCommands(commands.Cog):
         
         song_url = song
         
-        data = {
-            'url' : song_url
-        }
-        
         if not validators.url(song_url):
             videos = Search(song_url).videos[:10]
             selection_options = []
@@ -111,6 +107,10 @@ class KaraokeCommands(commands.Cog):
                     
                     # Update the message with disabled view and new embed
                     await interaction.response.edit_message(embed=selection_embed, view=self)
+                    
+                    data = {
+                        'url' : selected_video.watch_url
+                    }
 
                     try:
                         requests.post(f'{api_host}/api/queue', data=data)
@@ -165,6 +165,10 @@ class KaraokeCommands(commands.Cog):
             view.message = message
         else:
             video = pytubefix.YouTube(song_url)
+            
+            data = {
+                'url' : song_url
+            }
 
             try:
                 requests.post(f'{api_host}/api/queue', data=data)
